@@ -972,9 +972,23 @@ javascript:(function() {
                 event.target.value = '';
             }
 
-            // Initialize
-            groupedHistory = groupHistory(rawHistory);
-            applySavedSort();
+            /**
+             * Initialize the application
+             * Must wait for DOM to be ready
+             */
+            function init() {
+                console.log('Initializing with', rawHistory.length, 'history entries');
+                groupedHistory = groupHistory(rawHistory);
+                console.log('Grouped into', groupedHistory.length, 'unique words');
+                applySavedSort();
+            }
+
+            // Wait for DOM to be ready before initializing
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
 
             // Get DOM elements
             var btnSortDate = document.getElementById('btnSortDate');
