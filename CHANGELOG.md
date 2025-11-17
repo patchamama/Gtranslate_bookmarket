@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [3.1.0] - 2024-11-17
+
+### 🎯 Changed Grouping Behavior
+- **Word-Only Grouping**: Words now group by word text only, ignoring language pairs
+- **Language-Agnostic Counter**: Counter badge (×N) shows total searches across ALL language combinations
+- **Most Recent Languages Displayed**: Language badges show the most recent translation pair used
+- **Simplified Delete**: Delete button removes ALL occurrences of a word, regardless of languages
+
+### 📊 Example
+**Before v3.1.0:**
+- "hello" DE→EN (×3)
+- "hello" ES→EN (×2)
+- "hello" EN→DE (×1)
+
+**After v3.1.0:**
+- "hello" (×6) [Shows most recent: ES→EN]
+
+### 🔧 Technical Changes
+- Modified `groupHistory()` to use `key=item.word` instead of `key=item.word|sl|tl`
+- Updated language tracking to show most recent `sl` and `tl` on lastDate update
+- Changed `deleteWord()` to filter by word only: `item.word!==word`
+- Updated confirmation message: "Delete all occurrences of \"word\"?"
+
+---
+
 ## [3.0.2] - 2024-11-17 (Hotfix)
 
 ### 🐛 Fixed
