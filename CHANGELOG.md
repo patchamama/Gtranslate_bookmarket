@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [3.0.2] - 2024-11-17 (Hotfix)
+
+### 🐛 Fixed
+- **TrustedHTML Assignment Error**: Fixed "This document requires 'TrustedHTML' assignment" error in modern browsers
+- **Secure innerHTML Updates**: Added Trusted Types policy for CSP compliance
+- **Triple-Layer Fallback**: TrustedTypes → defaultPolicy → createElement fallback for maximum compatibility
+- **Word Grouping**: Confirmed words display correctly grouped with counter badge (×N)
+
+### 🔧 Technical Changes
+- Added `trustedTypes.createPolicy('gtranslate')` for secure HTML insertion
+- Implemented fallback using `createElement` and `appendChild` for strict CSP environments
+- Updated `win.updateDisplay()` function with comprehensive error handling
+- Ensures `win.filteredHistory` always contains grouped data (not raw duplicates)
+
+---
+
 ## [3.0.0] - 2024-11-17 🎉 MAJOR RELEASE
 
 ### 🌍 Major Changes
