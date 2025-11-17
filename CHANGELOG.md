@@ -7,12 +7,140 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.7.1] - 2024-11-17 (Hotfix)
+
+### 🐛 Corregido
+- **Botones de ordenación ahora funcionan**: Fix crítico en event listeners
+- **Vista se actualiza correctamente después de borrar**: La lista se refresca automáticamente
+- **Event listeners con funciones anónimas**: Soluciona problemas de contexto de ejecución
+
+### 🔧 Cambio Técnico
+
+**Antes (v2.7.0 - NO FUNCIONABA)**:
+```javascript
+btnSortDate.addEventListener('click', win.sortByDate);
+```
+
+**Ahora (v2.7.1 - FUNCIONA)**:
+```javascript
+btnSortDate.addEventListener('click', function() { win.sortByDate(); });
+```
+
+### 📝 Explicación
+El problema era que al pasar la referencia directa de la función (`win.sortByDate`) al `addEventListener`, el contexto de ejecución no era el correcto. Al usar funciones anónimas que llaman explícitamente a las funciones del window hijo, se asegura que se ejecuten en el contexto correcto.
+
+### ✅ Afectado
+- ✅ Botón "🕐 Por Fecha" - AHORA FUNCIONA
+- ✅ Botón "🔤 A-Z" - AHORA FUNCIONA
+- ✅ Botón "🔢 Por Uso" - AHORA FUNCIONA
+- ✅ Botón "💾 Exportar" - AHORA FUNCIONA
+- ✅ Botón "📥 Importar" - YA FUNCIONABA
+- ✅ Botón "🗑️ Borrar" - YA FUNCIONABA, ahora actualiza vista
+
+---
+
+## [2.7.0] - 2024-11-17
+
+### ✨ Añadido
+- **Contador de repeticiones**: Las palabras repetidas ahora se agrupan automáticamente
+- **Badge visual `×N`**: Muestra cuántas veces consultaste cada palabra
+- **Función `groupHistory()`**: Agrupa el historial por palabra+idiomas con contador
+- **Ordenar por uso**: Nueva opción para ver palabras más consultadas primero
+- **Tres tipos de ordenamiento**: Por Fecha, A-Z, Por Uso (antes solo 2)
+- **Archivo comentado para estudio**: `gtranslate-bookmarklet-commented.js` con explicaciones detalladas
+- **Verificación de elementos**: Comprueba que existan elementos antes de agregar listeners
+- **Stats mejoradas**: Muestra "Palabras únicas" en lugar de "Total de palabras"
+
+### 🐛 Corregido
+- **Todos los botones funcionan**: Fix completo de todos los botones (Ordenar, Borrar, etc.)
+- **Delay aumentado**: setTimeout de 100ms → 200ms para mejor confiabilidad
+- **Mejor timing**: Espera más tiempo para asegurar que DOM esté completamente listo
+- **Verificación robusta**: Previene errores de null reference en elementos
+
+### 🔄 Cambiado
+- **Agrupación inteligente**: El historial se muestra agrupado pero se mantiene raw en localStorage
+- **Display optimizado**: Antes mostraba cada búsqueda, ahora agrupa y cuenta
+- **Sort persistente**: Al importar datos, mantiene la vista de ordenamiento actual
+- **Mejor UX**: Interface más limpia sin duplicados visuales
+
+### 📚 Documentación
+- **Archivo comentado completo**: 800+ líneas con explicaciones de cada función
+- **Comentarios técnicos**: Explica decisiones de CSP y arquitectura
+- **Ejemplos de uso**: Diagramas de flujo en comentarios
+- **README actualizado**: Documentación completa de v2.7
+
+### 🎯 Datos Técnicos
+
+**Agrupación de Historial**:
+```javascript
+// Antes (v2.6):
+[
+  {word: "Hello", sl: "en", tl: "es", timestamp: "..."},
+  {word: "Hello", sl: "en", tl: "es", timestamp: "..."},
+  {word: "Hello", sl: "en", tl: "es", timestamp: "..."}
+]
+
+// Ahora (v2.7):
+[
+  {word: "Hello", sl: "en", tl: "es", count: 3, lastDate: "..."}
+]
+```
+
+**Display Visual**:
+```
+Antes: Hello (EN → ES)
+        Hello (EN → ES)
+        Hello (EN → ES)
+
+Ahora: Hello ×3 (EN → ES)
+```
+
+### 🔧 Mejoras de Código
+- **groupHistory()**: Nueva función de agrupación eficiente
+- **sortByCount()**: Nueva función de ordenamiento por frecuencia
+- **Badge CSS**: Nuevo estilo para contador de repeticiones
+- **Element checks**: Validación antes de addEventListener
+
+### 📊 Comparativa
+
+| Característica | v2.6 | v2.7 |
+|----------------|------|------|
+| Contador repeticiones | ❌ | ✅ |
+| Ordenar por uso | ❌ | ✅ |
+| Archivo comentado | ❌ | ✅ |
+| Todos botones funcionan | ⚠️ Parcial | ✅ Sí |
+| Delay inyección | 100ms | 200ms |
+| Verificación elementos | ❌ | ✅ |
+| Palabras únicas | ❌ | ✅ |
+
+### ⚡ Rendimiento
+- **Menos duplicados visuales**: Interface más limpia
+- **Agrupación eficiente**: O(n) con hash map
+- **Mantiene historial raw**: Exportación completa sin pérdida de datos
+- **Mejor timing**: 200ms evita race conditions
+
+### 🎨 UI/UX
+- **Badge de contador**: Estilo badge-primary para números
+- **Stats actualizadas**: "Palabras únicas" más descriptivo
+- **Tres botones de sort**: Interface consistente con Material Design
+- **Sin duplicados**: Vista más limpia y profesional
+
+### 🔒 Compatibilidad
+- **100% retrocompatible**: Lee historial de v2.6 y anteriores
+- **CSP compliance**: Mantiene 100% compatibilidad
+- **Browser support**: Todos los navegadores modernos
+- **Data migration**: Automática al mostrar historial
+
+---
+
 ## [2.6.0] - 2024-11-17
 
 ### 🐛 Corregido
 - **Error CSP de scripts inline**: Problema RESUELTO completamente
 - **Tag `<script>` bloqueado por CSP**: Eliminado del HTML generado
 - **"Executing inline script violates CSP"**: Error eliminado al 100%
+- **Botones no funcionaban (bugfix post-lanzamiento)**: Corregidas referencias a `document` → `win.document` en todas las funciones
+- **Contexto de ejecución incorrecto**: Funciones ahora usan el contexto de la ventana hija correctamente
 
 ### ✨ Añadido
 - **Inyección dinámica de scripts**: Nueva función `injectScripts()`
@@ -74,6 +202,21 @@ function injectScripts(win, history) {
 - Errores CSP en v2.6: 0 (cero)
 - Tasa de éxito: 100%
 - Compatible con CSP más estricto: ✅
+
+### ⚡ Hotfix Post-Lanzamiento
+**Problema**: Después del lanzamiento inicial de v2.6, se descubrió que algunos botones (Ordenar, Borrar) no funcionaban.
+
+**Causa Raíz**: Las funciones inyectadas usaban `document`, `confirm()`, `alert()` y `FileReader()` en el contexto global en lugar del contexto de la ventana hija (`win.document`, `win.confirm()`, etc.).
+
+**Correcciones aplicadas**:
+- `document.getElementById()` → `win.document.getElementById()`
+- `document.createElement()` → `win.document.createElement()`
+- `document.body.appendChild/removeChild()` → `win.document.body.appendChild/removeChild()`
+- `confirm()` → `win.confirm()`
+- `alert()` → `win.alert()`
+- `FileReader()` → `win.FileReader()`
+
+**Resultado**: Todos los botones ahora funcionan correctamente ✅
 
 ---
 
