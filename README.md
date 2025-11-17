@@ -2,10 +2,32 @@
 
 > A powerful browser bookmarklet that enhances Google Translate with history tracking, smart language rotation, and advanced features.
 
-**Version:** 3.0.0
+**Version:** 3.1.0
 **Last Updated:** 2024-11-17
 **Language:** JavaScript (ES6+)
 **Status:** ✅ Production Ready
+
+---
+
+## 🎯 What's New in Version 3.1
+
+### Word-Only Grouping
+
+- **📊 Language-Agnostic Grouping** - Words now group by word only, ignoring language pairs
+- **🔢 Total Counter** - Counter badge (×N) shows total searches across ALL languages
+- **🌐 Recent Languages Displayed** - Language badges show most recent translation pair
+- **🗑️ Simplified Delete** - Delete button removes ALL occurrences of a word
+
+**Example:**
+```
+Before v3.1:
+- "hello" DE→EN (×3)
+- "hello" ES→EN (×2)
+- "hello" EN→DE (×1)
+
+After v3.1:
+- "hello" (×6) [Shows most recent: EN→DE]
+```
 
 ---
 
@@ -36,7 +58,7 @@
 - **Smart Language Rotation**: Automatically rotates between DE → EN → ES
 - **Translation History**: Tracks all your Google Translate searches
 - **Persistent Storage**: Uses localStorage for data persistence
-- **Repetition Counter**: Groups duplicate words and shows usage count (×N badge)
+- **Repetition Counter**: Groups words (ignoring languages) and shows total usage count (×N badge)
 - **CSP Compliant**: 100% compatible with strict Content Security Policies
 
 ### Advanced Features

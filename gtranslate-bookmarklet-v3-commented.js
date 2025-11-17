@@ -1,5 +1,11 @@
 /**
- * Google Translate Bookmarklet Enhanced - Version 3.0
+ * Google Translate Bookmarklet Enhanced - Version 3.1.0
+ *
+ * MAJOR CHANGES IN V3.1.0:
+ * - Word grouping by word only (ignoring language pairs)
+ * - Counter badge shows total searches across all languages
+ * - Language badges display most recent translation pair
+ * - Delete removes all occurrences of word regardless of languages
  *
  * MAJOR CHANGES IN V3.0:
  * - Complete translation to English (UI, messages, variables)
@@ -7,14 +13,15 @@
  * - Real-time search/filter functionality
  * - Individual word deletion with × button
  * - Auto-refresh after all actions
- * - Using eval() injection for guaranteed button functionality
+ * - Trusted Types support for CSP compliance
  * - New localStorage key: gtranslateSortMode
  *
  * ARCHITECTURE:
  * - IIFE (Immediately Invoked Function Expression) pattern
- * - Blob URL + eval() injection for CSP compliance
- * - Event handlers using onclick (injected context, not inline HTML)
+ * - Blob URL + function injection for CSP compliance
+ * - Event handlers using addEventListener (not inline HTML)
  * - Persistent sort mode across sessions
+ * - TrustedHTML policy with createElement fallback
  */
 
 javascript:(function() {
@@ -659,15 +666,24 @@ javascript:(function() {
             }
 
             /**
-             * Group history by word+sl+tl combination
-             * Counts repetitions
+             * Group history by word ONLY (v3.1.0 change)
+             *
+             * V3.1.0 CHANGE: Now groups by word only, ignoring language pairs
+             * - key = item.word (not word|sl|tl)
+             * - Counter shows total searches across all languages
+             * - sl/tl updated to most recent translation pair
+             *
+             * Example:
+             * - "hello" DE→EN (3 times)
+             * - "hello" ES→EN (2 times)
+             * Result: "hello" ×5 [Shows most recent: ES→EN]
              */
             function groupHistory(historyArray) {
                 var grouped = {};
 
                 for (var i = 0; i < historyArray.length; i++) {
                     var item = historyArray[i];
-                    var key = item.word + '|' + item.sl + '|' + item.tl;
+                    var key = item.word; // V3.1.0: Group by word only
 
                     if (!grouped[key]) {
                         grouped[key] = {
@@ -682,9 +698,11 @@ javascript:(function() {
 
                     grouped[key].count++;
 
-                    // Update last date if newer
+                    // Update last date AND languages if newer (V3.1.0)
                     if (new Date(item.timestamp) > new Date(grouped[key].lastDate)) {
                         grouped[key].lastDate = item.timestamp;
+                        grouped[key].sl = item.sl;  // Update to most recent
+                        grouped[key].tl = item.tl;  // Update to most recent
                     }
                 }
 
@@ -812,15 +830,17 @@ javascript:(function() {
             /**
              * Delete a specific word from history
              * V3.0: NEW - Individual word deletion
+             * V3.1.0: Now deletes ALL occurrences of word (all language pairs)
              */
             function deleteWord(word, sl, tl) {
-                if (!confirm('Delete "' + word + '" (' + sl.toUpperCase() + ' → ' + tl.toUpperCase() + ')?')) {
+                // V3.1.0: Simplified message - deletes all occurrences
+                if (!confirm('Delete all occurrences of "' + word + '"?')) {
                     return;
                 }
 
-                // Filter out all occurrences of this word+lang combination
+                // V3.1.0: Filter by word only (ignore sl/tl)
                 rawHistory = rawHistory.filter(function(item) {
-                    return !(item.word === word && item.sl === sl && item.tl === tl);
+                    return item.word !== word;
                 });
 
                 // Update localStorage
