@@ -13,6 +13,8 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - **Error CSP de scripts inline**: Problema RESUELTO completamente
 - **Tag `<script>` bloqueado por CSP**: Eliminado del HTML generado
 - **"Executing inline script violates CSP"**: Error eliminado al 100%
+- **Botones no funcionaban (bugfix post-lanzamiento)**: Corregidas referencias a `document` → `win.document` en todas las funciones
+- **Contexto de ejecución incorrecto**: Funciones ahora usan el contexto de la ventana hija correctamente
 
 ### ✨ Añadido
 - **Inyección dinámica de scripts**: Nueva función `injectScripts()`
@@ -74,6 +76,21 @@ function injectScripts(win, history) {
 - Errores CSP en v2.6: 0 (cero)
 - Tasa de éxito: 100%
 - Compatible con CSP más estricto: ✅
+
+### ⚡ Hotfix Post-Lanzamiento
+**Problema**: Después del lanzamiento inicial de v2.6, se descubrió que algunos botones (Ordenar, Borrar) no funcionaban.
+
+**Causa Raíz**: Las funciones inyectadas usaban `document`, `confirm()`, `alert()` y `FileReader()` en el contexto global en lugar del contexto de la ventana hija (`win.document`, `win.confirm()`, etc.).
+
+**Correcciones aplicadas**:
+- `document.getElementById()` → `win.document.getElementById()`
+- `document.createElement()` → `win.document.createElement()`
+- `document.body.appendChild/removeChild()` → `win.document.body.appendChild/removeChild()`
+- `confirm()` → `win.confirm()`
+- `alert()` → `win.alert()`
+- `FileReader()` → `win.FileReader()`
+
+**Resultado**: Todos los botones ahora funcionan correctamente ✅
 
 ---
 
