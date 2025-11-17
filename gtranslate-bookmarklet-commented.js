@@ -794,17 +794,19 @@ javascript:(function() {
             var importFile = win.document.getElementById('importFile');
             var btnClear = win.document.getElementById('btnClear');
 
+            // IMPORTANTE: Usar funciones anónimas para asegurar que las funciones
+            // se ejecuten en el contexto correcto del window hijo
             if (btnSortDate) {
-                btnSortDate.addEventListener('click', win.sortByDate);
+                btnSortDate.addEventListener('click', function() { win.sortByDate(); });
             }
             if (btnSortAlpha) {
-                btnSortAlpha.addEventListener('click', win.sortAlphabetically);
+                btnSortAlpha.addEventListener('click', function() { win.sortAlphabetically(); });
             }
             if (btnSortCount) {
-                btnSortCount.addEventListener('click', win.sortByCount);
+                btnSortCount.addEventListener('click', function() { win.sortByCount(); });
             }
             if (btnExport) {
-                btnExport.addEventListener('click', win.exportHistory);
+                btnExport.addEventListener('click', function() { win.exportHistory(); });
             }
             if (btnImport) {
                 btnImport.addEventListener('click', function() {
@@ -817,7 +819,7 @@ javascript:(function() {
                 importFile.addEventListener('change', win.importHistory);
             }
             if (btnClear) {
-                btnClear.addEventListener('click', win.clearHistory);
+                btnClear.addEventListener('click', function() { win.clearHistory(); });
             }
 
             // Ordenar por fecha al cargar

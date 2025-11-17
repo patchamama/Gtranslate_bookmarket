@@ -7,6 +7,38 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.7.1] - 2024-11-17 (Hotfix)
+
+### 🐛 Corregido
+- **Botones de ordenación ahora funcionan**: Fix crítico en event listeners
+- **Vista se actualiza correctamente después de borrar**: La lista se refresca automáticamente
+- **Event listeners con funciones anónimas**: Soluciona problemas de contexto de ejecución
+
+### 🔧 Cambio Técnico
+
+**Antes (v2.7.0 - NO FUNCIONABA)**:
+```javascript
+btnSortDate.addEventListener('click', win.sortByDate);
+```
+
+**Ahora (v2.7.1 - FUNCIONA)**:
+```javascript
+btnSortDate.addEventListener('click', function() { win.sortByDate(); });
+```
+
+### 📝 Explicación
+El problema era que al pasar la referencia directa de la función (`win.sortByDate`) al `addEventListener`, el contexto de ejecución no era el correcto. Al usar funciones anónimas que llaman explícitamente a las funciones del window hijo, se asegura que se ejecuten en el contexto correcto.
+
+### ✅ Afectado
+- ✅ Botón "🕐 Por Fecha" - AHORA FUNCIONA
+- ✅ Botón "🔤 A-Z" - AHORA FUNCIONA
+- ✅ Botón "🔢 Por Uso" - AHORA FUNCIONA
+- ✅ Botón "💾 Exportar" - AHORA FUNCIONA
+- ✅ Botón "📥 Importar" - YA FUNCIONABA
+- ✅ Botón "🗑️ Borrar" - YA FUNCIONABA, ahora actualiza vista
+
+---
+
 ## [2.7.0] - 2024-11-17
 
 ### ✨ Añadido
